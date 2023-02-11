@@ -13,7 +13,11 @@ class Car:
         :return: Возвращает список, где отдельный элемент это одна
         строка (cтрана, ПрайсМосква, ПрайсСПБ, ПрайсНовосибирск, ПрайсКраснодар
         """
-        data_list = self.data.split('\n')
+
+        with open('database_car', 'r', encoding='utf-8') as file:
+            data_car = file.read()
+
+        data_list = data_car.split('\n')
         return data_list
 
     def get_all_country(self):
@@ -31,7 +35,7 @@ class Car:
         return all_country
 
     def get_cities(self):
-        city = ['Москва', 'Санкт Петербург', 'Новосибирск', 'Краснодар']
+        city = ['Москва', 'Санкт Петербург']
         return city
 
     def get_request_country_city(self):
@@ -61,8 +65,6 @@ class Car:
                 country_dict[choice_country] = {
                     cities[0]: data[1],
                     cities[1]: data[2],
-                    cities[2]: data[3],
-                    cities[3]: data[4]
                 }
 
                 return country_dict
@@ -70,5 +72,5 @@ class Car:
     def calculate(self, choice_country, choice_city):
         country_dict = self.create_dict(choice_country)
         price = country_dict.get(choice_country).get(choice_city)
-        result = f'Стоимость перевозки автомобиля составит {price}€'
+        result = f'Вот результат расчета {choice_country}-{choice_city} / {choice_city}-{choice_country}:\nСтоимость перевозки автомобиля составит {price}€'
         return result

@@ -2,7 +2,7 @@ import random
 
 from flask import Flask, render_template, request
 from random import choice
-from implemented import dao_personal_item, dao_car, motivational_phrases
+from implemented import dao_personal_item, dao_car, motivational_phrases, dao_car_admin
 
 
 application = Flask(__name__)
@@ -34,15 +34,28 @@ def personal_items():
 def car_page():
     countries = dao_car.get_all_country()
     cities = dao_car.get_cities()
+    fraze = random.choice(motivational_phrases)
 
     if request.method == 'GET':
-        return render_template('car.html', countries=countries, cities=cities)
+        return render_template('car.html', countries=countries, cities=cities, fraze=fraze)
 
     elif request.method == 'POST':
         data = dao_car.get_request_country_city()
         shipping_cost = dao_car.calculate(data[0], data[1])
-        return render_template("car.html", countries=countries, cities=cities, shipping_cost=shipping_cost)
+        return render_template("car.html", countries=countries, cities=cities, shipping_cost=shipping_cost, fraze=fraze)
 
+
+@application.route('/car_admin', methods=['GET', 'POST'])
+def car_admin_page():
+    countries = dao_car.get_all_country()
+    cities = dao_car.get_cities()
+
+    if request.method == 'GET':
+        return render_template('car_admin.html', countries=countries, cities=cities)
+
+    elif request.method == 'POST':
+        shipping_cost = dao_car_admin.changes_price()
+        return render_template("car_admin.html", countries=countries, cities=cities, shipping_cost=shipping_cost)
 
 if __name__ == '__main__':
     application.run()

@@ -4,11 +4,16 @@
     <title>InterCargoCalculate</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-16x16.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <style>
       h1 {
         text-align: center;
       }
+
+      h4 {
+        color: red;
+        text-align: center;
+      }
+
       a {
         display: block;
         text-align: center;
@@ -16,30 +21,15 @@
       }
       a {
         font-size: 20px;
-        color: #4CAF50;
+        color: #ffffff;
         text-decoration: none;
       }
-
-      p {
-        background-color: rgba(0, 0, 0, 0.1);
-        padding: 0.75em;
-        border-radius: 4px;
-        color: #333;
-        font-size: 14px;
-        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-        margin: 1em 0;
-        text-align: center;
-}
-
-
-
-
       a:hover {
         color: #3e8e41;
       }
       body {
         font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
+        background-color: #ffa500;
         padding: 30px;
       }
       form {
@@ -48,6 +38,7 @@
         border-radius: 10px;
         box-shadow: 0 0 10px #ccc;
       }
+
       label, select, input[type="submit"] {
         display: block;
         margin-bottom: 10px;
@@ -106,55 +97,37 @@
         input[type="number"] {
           font-size: 16px;
         }
-
       }
     </style>
   </head>
   <body>
-    <p>
-      {{ fraze }}
-    </p>
-    <a href="/car">Перейти к расчету перевозки автотранспорта</a>
-    <h1>Расчет стоимости перевозки личных вещей</h1>
-    <form method="post" action="/">
+    <a href="/car">Проверить обновленные данные</a>
+    <h4>Внимание! Данные изменять может только ответственный</h4>
+    <h1>Изменение цен для автоперевозок</h1>
+    <form action="/car_admin" method="post">
       <label for="country">Выбрать страну:</label>
-      <select name="country" id="country">
+      <select id="country" name="country">
         {% for country in countries %}
-          <option value="{{ country }}" {% if request.form.country == country %}selected{% endif %}>{{ country }}</option>
+          <option value="{{ country }}" {% if request.form.country == country %}selected{% endif %} >{{ country }}</option>
         {% endfor %}
       </select>
-      <br>
-      <label for="direction">Укажите направление:</label>
-      <select name="direction" id="direction">
-        <option value="import" {% if request.form.direction == 'import' %}selected{% endif %}>Import</option>
-        <option value="export" {% if request.form.direction == 'export' %}selected{% endif %}>Export</option>
+      <br><br>
+      <label for="city">Выбрать город:</label>
+      <select id="city" name="city">
+        {% for city in cities %}
+          <option value="{{ city }}" {% if request.form.city == city %}selected{% endif %} >{{ city }}</option>
+        {% endfor %}
       </select>
+       <br>
+      <label for="changed_price">Введите новый прайс для этого направления</label>
+      <input type="number" name="changed_price" id="changed_price" value="{{ request.form.changed_price }}" min="500">
       <br>
-      <label for="cubes">Введите количество кубов</label>
-      <input type="number" name="cubes" id="cubes" value="{{ request.form.cubes }}" min="1">
-      <br>
-      <input type="submit" value="Рассчитать">
+      <br><br>
+      <input type="submit" value="Изменить данные">
     </form>
     {% if shipping_cost %}
       <div class="result">{{ shipping_cost }}</div>
     {% endif %}
-     <button id="copy-button">Скопировать результат</button>
-        <script>
-        const copyButton = document.getElementById('copy-button');
-        const result = document.getElementsByClassName('result')[0];
-
-        copyButton.addEventListener('click', function() {
-          copyButton.innerHTML = "Скопировано!";
-          copyButton.style.backgroundColor = "blue";
-          copyButton.style.color = "white";
-
-          navigator.clipboard.writeText(result.textContent).then(function() {
-            console.log('Copying to clipboard was successful!');
-          }, function(err) {
-            console.error('Could not copy text: ', err);
-          });
-        });
-        </script>
 
   </body>
 </html>
